@@ -1,3 +1,5 @@
+#![feature(test)]
+
 fn main() {
     let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
@@ -97,4 +99,21 @@ impl CycleBuffer {
     fn get_prev_index(i : usize) -> usize {
         (i + 4) % 5
     }
+}
+
+extern crate test;
+use test::Bencher;
+
+#[bench]
+fn test_part1(b: &mut Bencher) {
+    let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
+    let lines: Vec<&str> = input.lines().collect();
+    b.iter(|| part1(&lines));
+}
+
+#[bench]
+fn test_part2(b: &mut Bencher) {
+    let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
+    let lines: Vec<&str> = input.lines().collect();
+    b.iter(|| part2(&lines));
 }
