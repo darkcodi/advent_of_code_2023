@@ -4,15 +4,46 @@ fn main() {
     let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
     part1(&lines);
+    part2(&lines);
 }
 
 fn part1(lines: &Vec<&str>) {
     let mut sum = 0;
     for line in lines {
         let card = Card::new(line);
-        sum += card.points();
+        let matches = card.matches();
+        if matches == 0 {
+            continue;
+        }
+
+        sum += 2u32.pow(matches - 1);
     }
     println!("Part 1: {}", sum);
+}
+
+fn part2(lines: &Vec<&str>) {
+    let mut dict = std::collections::HashMap::new();
+    for i in 0..lines.len() {
+        dict.insert(i, 1u32);
+    }
+
+    let mut sum = 0;
+    for i in 0..lines.len() {
+        let card = Card::new(lines[i]);
+        let current_card_amount = dict.get(&i).unwrap().clone();
+        sum += current_card_amount;
+        let matches = card.matches();
+        if matches == 0 {
+            continue;
+        }
+
+        for j in i+1..i+1+(matches as usize) {
+            let next_card_amount = dict.get_mut(&j).unwrap();
+            *next_card_amount += current_card_amount;
+        }
+    }
+
+    println!("Part 2: {}", sum);
 }
 
 struct Card {
@@ -35,18 +66,14 @@ impl Card {
         }
     }
 
-    fn points(&self) -> u32 {
+    fn matches(&self) -> u32 {
         let mut matches = 0;
         for number in &self.your_numbers {
             if self.winning_numbers.contains(&number) {
                 matches += 1;
             }
         }
-        if matches == 0 {
-            return 0;
-        }
-
-        2u32.pow(matches - 1)
+        matches
     }
 }
 
@@ -58,4 +85,11 @@ fn test_part1(b: &mut Bencher) {
     let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
     b.iter(|| part1(&lines));
+}
+
+#[bench]
+fn test_part2(b: &mut Bencher) {
+    let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
+    let lines: Vec<&str> = input.lines().collect();
+    b.iter(|| part2(&lines));
 }
