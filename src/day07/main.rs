@@ -3,11 +3,10 @@
 fn main() {
     let input = std::fs::read_to_string("src/day07/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    //part2(&lines);
+    part2(&lines);
 }
 
-fn part1(lines: &Vec<&str>) {
+fn part2(lines: &Vec<&str>) {
     let mut hands_with_bids = Vec::new();
     for line in lines {
         let (hand_str, bid_str) = line.split_at(5);
@@ -23,7 +22,7 @@ fn part1(lines: &Vec<&str>) {
         sum += hand_with_bid.bid * rank;
         rank += 1;
     }
-    println!("Part 1: {}", sum);
+    println!("Part 2: {}", sum);
 }
 
 #[derive(Eq, PartialEq, PartialOrd, Ord)]
@@ -43,6 +42,7 @@ impl Hand {
         let mut cards = Vec::new();
         for c in hand_str.chars() {
             let card = match c {
+                'J' => 1,
                 '2' => 2,
                 '3' => 3,
                 '4' => 4,
@@ -52,10 +52,9 @@ impl Hand {
                 '8' => 8,
                 '9' => 9,
                 'T' => 10,
-                'J' => 11,
-                'Q' => 12,
-                'K' => 13,
-                'A' => 14,
+                'Q' => 11,
+                'K' => 12,
+                'A' => 13,
                 _ => panic!("Invalid card"),
             };
             cards.push(card);
@@ -65,12 +64,54 @@ impl Hand {
     }
 
     fn get_type(cards: &Vec<u32>) -> HandType {
-        let mut counts = [0; 13];
+        let mut counts = [0; 12];
+        let mut joker_count = 0;
         for card in cards {
+            if *card == 1 {
+                joker_count += 1;
+                continue;
+            }
             counts[(*card - 2) as usize] += 1;
         }
 
         let max_count = *counts.iter().max().unwrap();
+
+        if joker_count == 1 {
+            if max_count == 4 {
+                return HandType::FiveOfAKind;
+            }
+            if max_count == 3 {
+                return HandType::FourOfAKind;
+            }
+            if max_count == 2 {
+                if counts.iter().filter(|c| **c == 2).count() == 1 {
+                    return HandType::ThreeOfAKind;
+                }
+                return HandType::FullHouse;
+            }
+            return HandType::OnePair; // max_count == 1
+        }
+
+        if joker_count == 2 {
+            if max_count == 3 {
+                return HandType::FiveOfAKind;
+            }
+            if max_count == 2 {
+                return HandType::FourOfAKind;
+            }
+            return HandType::ThreeOfAKind; // max_count == 1
+        }
+
+        if joker_count == 3 {
+            if max_count == 2 {
+                return HandType::FiveOfAKind;
+            }
+            return HandType::FourOfAKind; // max_count == 1
+        }
+
+        if joker_count == 4 || joker_count == 5 {
+            return HandType::FiveOfAKind;
+        }
 
         match max_count {
             1 => HandType::HighCard,
@@ -127,10 +168,6 @@ enum HandType {
     FiveOfAKind = 6,
 }
 
-// fn part2(lines: &Vec<&str>) {
-//     todo!()
-// }
-
 extern crate test;
 
 use std::cmp::Ordering;
@@ -140,12 +177,5 @@ use test::Bencher;
 fn test_part1(b: &mut Bencher) {
     let input = std::fs::read_to_string("src/day07/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
+    b.iter(|| part2(&lines));
 }
-
-// #[bench]
-// fn test_part2(b: &mut Bencher) {
-//     let input = std::fs::read_to_string("src/day07/input.txt").unwrap();
-//     let lines: Vec<&str> = input.lines().collect();
-//     b.iter(|| part2(&lines));
-// }
