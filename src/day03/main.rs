@@ -1,13 +1,17 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day03/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
+fn part1(input: &str) -> u32 {
+    let lines: Vec<&str> = input.lines().collect();
     let mut sum = 0;
     for i in 0..lines.len() {
         let current_line = lines[i].as_bytes();
@@ -24,10 +28,11 @@ fn part1(lines: &Vec<&str>) {
             sum += numbers.iter().sum::<u32>();
         }
     }
-    println!("Part 1: {}", sum);
+    sum
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> u32 {
+    let lines: Vec<&str> = input.lines().collect();
     let mut sum = 0;
     for i in 0..lines.len() {
         let current_line = lines[i].as_bytes();
@@ -44,7 +49,7 @@ fn part2(lines: &Vec<&str>) {
             }
         }
     }
-    println!("Part 2: {}", sum);
+    sum
 }
 
 fn find_numbers(current_line: &[u8], prev_line: Option<&[u8]>, next_line: Option<&[u8]>, i: usize, j: usize) -> Vec<u32> {
@@ -90,7 +95,7 @@ fn s_left(line: &[u8], i: usize) -> u32 {
     let mut number = 0;
     let mut j = i;
     let mut multiplier = 1;
-    while j >= 0 {
+    loop {
         let c = line[j] as char;
         if c.is_digit(10) {
             number += c.to_digit(10).unwrap() * multiplier;
@@ -123,18 +128,9 @@ fn s_right(line: &[u8], i: usize) -> u32 {
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day03/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day03/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 4361); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 467835); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 556057); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 82824352); }

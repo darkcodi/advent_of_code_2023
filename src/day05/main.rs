@@ -1,21 +1,24 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day05/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
-    let almanac = parse_almanac(lines);
+fn part1(input: &str) -> i64 {
+    let almanac = parse_almanac(input);
     let locations = almanac.seeds.iter().map(|seed| almanac.map(*seed as i64)).collect::<Vec<i64>>();
-    let min = locations.iter().min().unwrap();
-    println!("Part 1: {}", min);
+    let min = *locations.iter().min().unwrap();
+    min
 }
 
-fn part2(lines: &Vec<&str>) {
-    let mut almanac = parse_almanac(lines);
+fn part2(input: &str) -> i64 {
+    let mut almanac = parse_almanac(input);
 
     // fix seeds
     let mut counts = Vec::with_capacity(almanac.seeds.len() / 2);
@@ -45,11 +48,12 @@ fn part2(lines: &Vec<&str>) {
         locations.push(min_location);
     }
 
-    let min = locations.iter().min().unwrap();
-    println!("Part 2: {}", min);
+    let min = *locations.iter().min().unwrap();
+    min
 }
 
-fn parse_almanac(lines: &Vec<&str>) -> Almanac {
+fn parse_almanac(input: &str) -> Almanac {
+    let lines = input.lines().collect::<Vec<&str>>();
     let (first_line, other_lines) = lines.split_first().unwrap();
     let (_, first_line) = first_line.split_at(7); // skip first 7 chars in first line - "seeds: "
     let seeds: Vec<i64> = first_line.split(' ').map(|s| s.parse::<i64>().unwrap()).collect();
@@ -173,7 +177,7 @@ impl AlmanacMap {
 
         // fill gaps
         let mut start = 0;
-        let mut end = self.max().max(other.max());
+        let end = self.max().max(other.max());
         let mut self_mappings = Vec::new();
         for mapping in &self.mappings {
             if mapping.src.start > start {
@@ -284,18 +288,9 @@ impl Segment {
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day05/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day05/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 35); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 46); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 825516882); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 136096660); }

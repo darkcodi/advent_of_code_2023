@@ -1,30 +1,33 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
+fn part1(input: &str) -> i64 {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let numbers: Vec<i64> = line.split_whitespace().map(|x| x.parse::<i64>().unwrap()).collect();
         let next_number = predict_next_number(&numbers);
         sum += next_number;
     }
-    println!("Part 1: {}", sum);
+    sum
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> i64 {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let numbers: Vec<i64> = line.split_whitespace().map(|x| x.parse::<i64>().unwrap()).collect();
         let previous_number = predict_previous_number(&numbers);
         sum += previous_number;
     }
-    println!("Part 2: {}", sum);
+    sum
 }
 
 fn predict_next_number(numbers: &Vec<i64>) -> i64 {
@@ -54,18 +57,9 @@ fn get_diff(numbers: &Vec<i64>) -> Vec<i64> {
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 114); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 2); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 1972648895); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 919); }

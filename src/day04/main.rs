@@ -1,15 +1,18 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
+fn part1(input: &str) -> u32 {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let card = Card::new(line);
         let matches = card.matches();
         if matches == 0 {
@@ -18,10 +21,11 @@ fn part1(lines: &Vec<&str>) {
 
         sum += 2u32.pow(matches - 1);
     }
-    println!("Part 1: {}", sum);
+    sum
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> u32 {
+    let lines: Vec<&str> = input.lines().collect();
     let mut dict = std::collections::HashMap::new();
     for i in 0..lines.len() {
         dict.insert(i, 1u32);
@@ -42,25 +46,21 @@ fn part2(lines: &Vec<&str>) {
             *next_card_amount += current_card_amount;
         }
     }
-
-    println!("Part 2: {}", sum);
+    sum
 }
 
 struct Card {
-    id: u32,
     winning_numbers: Vec<u32>,
     your_numbers: Vec<u32>,
 }
 
 impl Card {
     fn new(line: &str) -> Card {
-        let (id_part, game_part) = line.split_at(line.find(':').unwrap());
-        let id = id_part[5..].trim_start().parse::<u32>().unwrap();
+        let (_, game_part) = line.split_at(line.find(':').unwrap());
         let (left_part, right_part) = game_part.split_at(game_part.find('|').unwrap());
         let winning_numbers = left_part[1..].split(' ').filter(|n| *n != "").map(|n| n.parse::<u32>().unwrap()).collect::<Vec<u32>>();
         let your_numbers = right_part[1..].split(' ').filter(|n| *n != "").map(|n| n.parse::<u32>().unwrap()).collect::<Vec<u32>>();
         Card {
-            id,
             winning_numbers,
             your_numbers,
         }
@@ -78,18 +78,9 @@ impl Card {
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day04/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 13); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 30); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 18619); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 8063216); }

@@ -1,36 +1,31 @@
 #![feature(test)]
 
+use std::collections::HashMap;
+
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST1: &str = include_str!("input-test1.txt");
+const INPUT_TEST2: &str = include_str!("input-test2.txt");
+const INPUT_TEST3: &str = include_str!("input-test3.txt");
+const INPUT_TEST4: &str = include_str!("input-test4.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day10/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST1));
+    println!("Part 1: {}", part1(INPUT));
+    // println!("Part 2 (test 1): {}", part2(INPUT_TEST2));
+    // println!("Part 2 (test 2): {}", part2(INPUT_TEST3));
+    // println!("Part 2 (test 3): {}", part2(INPUT_TEST4));
+    // println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
-    let graph = build_graph(lines);
+fn part1(input: &str) -> usize {
+    let graph = build_graph(input);
     let distances = dijkstra(&graph);
-    let max_distance = distances.values().max().unwrap();
-    println!("Part 1: {}", max_distance);
+    let max_distance = *distances.values().max().unwrap();
+    max_distance
 }
 
-fn dijkstra(graph: &Graph) -> HashMap<Vec2, usize> {
-    let mut distances = HashMap::new();
-    let mut queue = Vec::new();
-    queue.push((graph.root_position, 0));
-    while !queue.is_empty() {
-        let (position, distance) = queue.remove(0);
-        if distances.contains_key(&position) {
-            continue;
-        }
-        distances.insert(position, distance);
-        let node = graph.nodes_map.get(&position).unwrap();
-        for (_, neighbour_position) in node.neighbours.iter() {
-            if !distances.contains_key(neighbour_position) {
-                queue.push((*neighbour_position, distance + 1));
-            }
-        }
-    }
-    distances
+fn part2(input: &str) -> usize {
+    todo!()
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Default)]
@@ -139,7 +134,8 @@ struct Graph {
     root_position: Vec2,
 }
 
-fn build_graph(lines: &Vec<&str>) -> Graph {
+fn build_graph(input: &str) -> Graph {
+    let lines: Vec<&str> = input.lines().collect();
     let mut nodes_map = HashMap::new();
     let mut root_position = Vec2::default();
     for (x, line) in lines.iter().enumerate() {
@@ -151,8 +147,8 @@ fn build_graph(lines: &Vec<&str>) -> Graph {
             if c == 'S' {
                 root_position = position;
             }
-            let pipe_type = if c == 'S' { suggest_pipe_type(lines, &position) } else { PipeType::from_char(c) };
-            let neighbours = neighbours_map(lines, &position).iter()
+            let pipe_type = if c == 'S' { suggest_pipe_type(&lines, &position) } else { PipeType::from_char(c) };
+            let neighbours = neighbours_map(&lines, &position).iter()
                 .filter(|(direction, pos)| {
                     let neighbour = lines[pos.x].as_bytes()[pos.y] as char;
                     neighbour == 'S' || PipeType::from_char(neighbour).is_compatible(direction)
@@ -198,14 +194,32 @@ fn neighbours_map(lines: &Vec<&str>, pos: &Vec2) -> Vec<(Direction, Vec2)> {
     neighbours_map
 }
 
-extern crate test;
-
-use std::collections::HashMap;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day10/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
+fn dijkstra(graph: &Graph) -> HashMap<Vec2, usize> {
+    let mut distances = HashMap::new();
+    let mut queue = Vec::new();
+    queue.push((graph.root_position, 0));
+    while !queue.is_empty() {
+        let (position, distance) = queue.remove(0);
+        if distances.contains_key(&position) {
+            continue;
+        }
+        distances.insert(position, distance);
+        let node = graph.nodes_map.get(&position).unwrap();
+        for (_, neighbour_position) in node.neighbours.iter() {
+            if !distances.contains_key(neighbour_position) {
+                queue.push((*neighbour_position, distance + 1));
+            }
+        }
+    }
+    distances
 }
+
+extern crate test;
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST1), 8); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST2), 4); }
+#[test] fn part2_test_answer2() { assert_eq!(part2(INPUT_TEST3), 8); }
+#[test] fn part2_test_answer3() { assert_eq!(part2(INPUT_TEST4), 10); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 6682); }
+//#[test] fn part2_answer() { assert_eq!(part2(INPUT), ???); }

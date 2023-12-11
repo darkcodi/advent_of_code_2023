@@ -1,19 +1,22 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
+fn main() {
+    println!("Part 1 (test): {}", part1(INPUT_TEST));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
+}
+
 const RED_CUBES: usize = 12;
 const GREEN_CUBES: usize = 13;
 const BLUE_CUBES: usize = 14;
 
-fn main() {
-    let input = std::fs::read_to_string("src/day02/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
-}
-
-fn part1(lines: &Vec<&str>) {
+fn part1(input: &str) -> usize {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let (id_part, game_part) = line.split_at(line.find(':').unwrap());
         let mut is_possible = true;
         for turn_part in game_part[1..].split(';') {
@@ -41,12 +44,12 @@ fn part1(lines: &Vec<&str>) {
             sum += id;
         }
     }
-    println!("Part 1: {}", sum);
+    sum
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> usize {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let (mut max_red, mut max_green, mut max_blue) = (0, 0, 0);
         let (_, game_part) = line.split_at(line.find(':').unwrap());
         for turn_part in game_part[1..].split(';') {
@@ -65,22 +68,13 @@ fn part2(lines: &Vec<&str>) {
         let power = max_red * max_green * max_blue;
         sum += power;
     }
-    println!("Part 2: {}", sum);
+    sum
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day02/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day02/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 8); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 2286); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 2207); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 62241); }

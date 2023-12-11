@@ -1,15 +1,19 @@
 #![feature(test)]
 
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST1: &str = include_str!("input-test1.txt");
+const INPUT_TEST2: &str = include_str!("input-test2.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part1(&lines);
-    part2(&lines);
+    println!("Part 1 (test): {}", part1(INPUT_TEST1));
+    println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST2));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part1(lines: &Vec<&str>) {
+fn part1(input: &str) -> u32 {
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let mut first_number = None;
         let mut last_number = None;
         for c in line.chars() {
@@ -25,13 +29,13 @@ fn part1(lines: &Vec<&str>) {
             sum += first_number.unwrap() * 10 + last_number.unwrap();
         }
     }
-    println!("Part 1: {}", sum);
+    sum
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> u32 {
     let mut buffer = CycleBuffer::new();
     let mut sum = 0;
-    for line in lines {
+    for line in input.lines() {
         let mut first_number = None;
         let mut last_number = None;
         for c in line.chars() {
@@ -48,7 +52,7 @@ fn part2(lines: &Vec<&str>) {
             sum += first_number.unwrap() * 10 + last_number.unwrap();
         }
     }
-    println!("Part 2: {}", sum);
+    sum
 }
 
 struct CycleBuffer {
@@ -102,18 +106,9 @@ impl CycleBuffer {
 }
 
 extern crate test;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part1(&lines));
-}
-
-#[bench]
-fn test_part2(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day01/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST1), 142); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST2), 281); }
+#[test] fn part1_answer() { assert_eq!(part1(INPUT), 55029); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 55686); }

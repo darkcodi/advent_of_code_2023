@@ -1,14 +1,20 @@
 #![feature(test)]
 
+use std::cmp::Ordering;
+
+const INPUT: &str = include_str!("input.txt");
+const INPUT_TEST: &str = include_str!("input-test.txt");
+
 fn main() {
-    let input = std::fs::read_to_string("src/day07/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    part2(&lines);
+    // println!("Part 1 (test): {}", part1(INPUT_TEST));
+    // println!("Part 1: {}", part1(INPUT));
+    println!("Part 2 (test): {}", part2(INPUT_TEST));
+    println!("Part 2: {}", part2(INPUT));
 }
 
-fn part2(lines: &Vec<&str>) {
+fn part2(input: &str) -> u32 {
     let mut hands_with_bids = Vec::new();
-    for line in lines {
+    for line in input.lines() {
         let (hand_str, bid_str) = line.split_at(5);
         let hand = Hand::new(hand_str);
         let bid = bid_str[1..].parse::<u32>().unwrap();
@@ -22,7 +28,7 @@ fn part2(lines: &Vec<&str>) {
         sum += hand_with_bid.bid * rank;
         rank += 1;
     }
-    println!("Part 2: {}", sum);
+    sum
 }
 
 #[derive(Eq, PartialEq, PartialOrd, Ord)]
@@ -169,13 +175,9 @@ enum HandType {
 }
 
 extern crate test;
-
-use std::cmp::Ordering;
-use test::Bencher;
-
-#[bench]
-fn test_part1(b: &mut Bencher) {
-    let input = std::fs::read_to_string("src/day07/input.txt").unwrap();
-    let lines: Vec<&str> = input.lines().collect();
-    b.iter(|| part2(&lines));
-}
+//#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+//#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 6440); }
+#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 5905); }
+//#[test] fn part1_answer() { assert_eq!(part1(INPUT), 248113761); }
+#[test] fn part2_answer() { assert_eq!(part2(INPUT), 246285222); }
