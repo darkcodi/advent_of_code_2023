@@ -4,6 +4,7 @@ fn main() {
     let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
     part1(&lines);
+    part2(&lines);
 }
 
 fn part1(lines: &Vec<&str>) {
@@ -16,6 +17,16 @@ fn part1(lines: &Vec<&str>) {
     println!("Part 1: {}", sum);
 }
 
+fn part2(lines: &Vec<&str>) {
+    let mut sum = 0;
+    for line in lines {
+        let numbers: Vec<i64> = line.split_whitespace().map(|x| x.parse::<i64>().unwrap()).collect();
+        let previous_number = predict_previous_number(&numbers);
+        sum += previous_number;
+    }
+    println!("Part 2: {}", sum);
+}
+
 fn predict_next_number(numbers: &Vec<i64>) -> i64 {
     let diff = get_diff(numbers);
     if diff.iter().all(|x| *x == 0) {
@@ -23,6 +34,15 @@ fn predict_next_number(numbers: &Vec<i64>) -> i64 {
     }
     let next_diff = predict_next_number(&diff);
     numbers[numbers.len() - 1] + next_diff
+}
+
+fn predict_previous_number(numbers: &Vec<i64>) -> i64 {
+    let diff = get_diff(numbers);
+    if diff.iter().all(|x| *x == 0) {
+        return numbers[0]
+    }
+    let prev_diff = predict_previous_number(&diff);
+    numbers[0] - prev_diff
 }
 
 fn get_diff(numbers: &Vec<i64>) -> Vec<i64> {
@@ -41,4 +61,11 @@ fn test_part1(b: &mut Bencher) {
     let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
     let lines: Vec<&str> = input.lines().collect();
     b.iter(|| part1(&lines));
+}
+
+#[bench]
+fn test_part2(b: &mut Bencher) {
+    let input = std::fs::read_to_string("src/day09/input.txt").unwrap();
+    let lines: Vec<&str> = input.lines().collect();
+    b.iter(|| part2(&lines));
 }
