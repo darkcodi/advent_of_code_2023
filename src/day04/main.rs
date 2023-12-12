@@ -78,8 +78,8 @@ impl Card {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 126,210 ns/iter (+/- 16,117)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 140,675 ns/iter (+/- 8,612)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 13); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 30); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 18619); }

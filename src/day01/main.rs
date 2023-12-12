@@ -106,8 +106,8 @@ impl CycleBuffer {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 28,467 ns/iter (+/- 5,411)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 138,505 ns/iter (+/- 6,980)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST1), 142); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST2), 281); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 55029); }

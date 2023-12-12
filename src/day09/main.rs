@@ -57,8 +57,8 @@ fn get_diff(numbers: &Vec<i64>) -> Vec<i64> {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 139,426 ns/iter (+/- 10,814)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 143,120 ns/iter (+/- 9,015)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 114); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 2); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 1972648895); }

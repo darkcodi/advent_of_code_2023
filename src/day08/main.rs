@@ -110,8 +110,8 @@ fn find_gcd(first: usize, second: usize) -> usize {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 238,297 ns/iter (+/- 13,129)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 1,394,483 ns/iter (+/- 31,624)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST1), 2); }
 #[test] fn part1_test_answer2() { assert_eq!(part1(INPUT_TEST2), 6); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST3), 6); }

@@ -288,8 +288,8 @@ impl Segment {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 96,886 ns/iter (+/- 5,077)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 123,115 ns/iter (+/- 6,500)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 35); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 46); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 825516882); }

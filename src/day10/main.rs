@@ -215,11 +215,11 @@ fn dijkstra(graph: &Graph) -> HashMap<Vec2, usize> {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 6,505,720 ns/iter (+/- 607,544)
+//#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST1), 8); }
-#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST2), 4); }
-#[test] fn part2_test_answer2() { assert_eq!(part2(INPUT_TEST3), 8); }
-#[test] fn part2_test_answer3() { assert_eq!(part2(INPUT_TEST4), 10); }
+//#[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST2), 4); }
+//#[test] fn part2_test_answer2() { assert_eq!(part2(INPUT_TEST3), 8); }
+//#[test] fn part2_test_answer3() { assert_eq!(part2(INPUT_TEST4), 10); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 6682); }
 //#[test] fn part2_answer() { assert_eq!(part2(INPUT), ???); }

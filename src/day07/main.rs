@@ -176,7 +176,7 @@ enum HandType {
 
 extern crate test;
 //#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 198,735 ns/iter (+/- 9,940)
 //#[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 6440); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 5905); }
 //#[test] fn part1_answer() { assert_eq!(part1(INPUT), 248113761); }

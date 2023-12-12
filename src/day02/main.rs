@@ -72,8 +72,8 @@ fn part2(input: &str) -> usize {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 15,500 ns/iter (+/- 2,473)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 17,864 ns/iter (+/- 1,382)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 8); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 2286); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 2207); }

@@ -128,8 +128,8 @@ fn s_right(line: &[u8], i: usize) -> u32 {
 }
 
 extern crate test;
-#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); }
-#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); }
+#[bench] fn part1_perf(b: &mut test::Bencher) { b.iter(|| part1(INPUT)); } // 42,251 ns/iter (+/- 2,504)
+#[bench] fn part2_perf(b: &mut test::Bencher) { b.iter(|| part2(INPUT)); } // 23,133 ns/iter (+/- 935)
 #[test] fn part1_test_answer() { assert_eq!(part1(INPUT_TEST), 4361); }
 #[test] fn part2_test_answer() { assert_eq!(part2(INPUT_TEST), 467835); }
 #[test] fn part1_answer() { assert_eq!(part1(INPUT), 556057); }
